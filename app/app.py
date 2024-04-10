@@ -14,12 +14,11 @@ VOICEVOX_ENGINE_URL = "http://vsa-voicevox-engine:50021"
 async def synthesize_to_mp3(request: SynthesizeRequest):
     # VOICEVOXから音声データを取得
     async with httpx.AsyncClient() as client:
-        response = await client.post(f"{VOICEVOX_ENGINE_URL}/audio_query?text={request.text}&speaker=1", json={})
+        response = await client.post(f"{VOICEVOX_ENGINE_URL}/audio_query?text={request.text}&speaker={request.speaker}", json={})
         if response.status_code != 200:
             raise HTTPException(status_code=400, detail="Error from VOICEVOX Engine")
         query = response.json()
-
-        synthesis_response = await client.post(f"{VOICEVOX_ENGINE_URL}/synthesis?speaker=1", json=query)
+        synthesis_response = await client.post(f"{VOICEVOX_ENGINE_URL}/synthesis?speaker={request.speaker}", json=query)
         if synthesis_response.status_code != 200:
             raise HTTPException(status_code=400, detail="Error from VOICEVOX Engine")
 
